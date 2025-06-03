@@ -24,3 +24,23 @@ This React-based frontend captures that vision through bold design, modular comp
 - **CSS Modules / Inline Styling** — depending on specific components
 - **Framer Motion** — smooth animations
 - **Heroicons / Lucide / Custom Icons** — iconography
+
+
+---
+
+## 📦 Dependencies
+
+Run `npm install` or `yarn` to install:
+
+```json
+{
+  "react": "^18.x",
+  "react-dom": "^18.x",
+  "react-router-dom": "^6.x",
+  "tailwindcss": "^3.x",
+  "framer-motion": "^10.x",
+  "vite": "^5.x",
+  "lucide-react": "^0.287.0",
+  "autoprefixer": "^10.x",
+  "postcss": "^8.x"
+}
