@@ -1,7 +1,8 @@
-
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Eye, EyeOff, Mail, Lock } from 'lucide-react';
+import { useAuth } from '@/contexts/AuthContext';
+import { toast } from 'sonner';
 
 const Login = () => {
   const [formData, setFormData] = useState({
@@ -11,8 +12,12 @@ const Login = () => {
   });
   const [showPassword, setShowPassword] = useState(false);
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [isLoading, setIsLoading] = useState(false);
+  
+  const { login } = useAuth();
+  const navigate = useNavigate();
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const newErrors: Record<string, string> = {};
 
@@ -31,8 +36,20 @@ const Login = () => {
     setErrors(newErrors);
 
     if (Object.keys(newErrors).length === 0) {
-      console.log('Login submitted:', formData);
-      // Handle login logic here
+      setIsLoading(true);
+      try {
+        const success = await login(formData.email, formData.password);
+        if (success) {
+          toast.success('Successfully signed in!');
+          navigate('/dashboard');
+        } else {
+          toast.error('Invalid email or password');
+        }
+      } catch (error) {
+        toast.error('An error occurred during sign in');
+      } finally {
+        setIsLoading(false);
+      }
     }
   };
 
@@ -154,9 +171,10 @@ const Login = () => {
             {/* Submit Button */}
             <button
               type="submit"
-              className="w-full bg-gradient-to-r from-blue-800 to-cyan-600 text-white py-3 px-4 rounded-lg font-semibold hover:from-blue-900 hover:to-cyan-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200 transform hover:scale-[1.02]"
+              disabled={isLoading}
+              className="w-full bg-gradient-to-r from-blue-800 to-cyan-600 text-white py-3 px-4 rounded-lg font-semibold hover:from-blue-900 hover:to-cyan-700 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all duration-200 transform hover:scale-[1.02] disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
             >
-              Sign in
+              {isLoading ? 'Signing in...' : 'Sign in'}
             </button>
           </form>
 
